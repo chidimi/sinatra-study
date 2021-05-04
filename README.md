@@ -1,7 +1,7 @@
 # sinatraで作成したメモアプリ
 
 sinatraで作成した簡易なメモアプリです  
-メモ内容はresources/memo.jsonに保存されます  
+メモ内容はresources/memos.jsonに保存されます  
 cssフレームワークにbulmaを使用しています  
 
 # usage
