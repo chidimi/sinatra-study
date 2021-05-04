@@ -2,15 +2,9 @@
 
 require 'sinatra'
 require 'sinatra/reloader'
-require 'json'
+require './models/memo'
 
-MEMO_FILE_PATH = './resources/memos.json'
-
-def read_memos_json
-  file = File.open(MEMO_FILE_PATH)
-  json = file.read
-  JSON.parse(json)
-end
+memo = Memo.new('./resources/memos.json')
 
 helpers do
   include Rack::Utils
@@ -18,7 +12,7 @@ helpers do
 end
 
 get '/' do
-  @memos = read_memos_json['memos']
+  @memos = memo.read_memos_json['memos']
   p @memos
   erb :top
 end
@@ -28,22 +22,23 @@ get '/newmemo' do
 end
 
 post '/newmemo' do
-  memos = read_memos_json['memos']
+  memos = memo.read_memos_json['memos']
   memos.each do |memo|
     memo[]
+  end
   title = params[:title]
   content = params[:content]
 end
 
 get '/memodetail/:id' do
-  memos = read_memos_json['memos']
+  memos = memo.read_memos_json['memos']
   @memo = memos.find { |memo| memo['id'] == params[:id] }
 
   erb :memodetail
 end
 
 delete '/memodetail/:id' do
-  hash = read_memos_json
+  hash = memo.read_memos_json
   hash['memos'] = hash['memos'].delete_if { |memo| memo['id'] == params[:id] }
   File.open(MEMO_FILE_PATH, 'w') do |file|
     JSON.dump(hash, file)
@@ -52,7 +47,7 @@ delete '/memodetail/:id' do
 end
 
 get '/editmemo/:id' do
-  memos = read_memos_json['memos']
+  memos = memo.read_memos_json['memos']
   @memo = memos.find { |memo| memo['id'] == params[:id] }
 
   erb :editmemo
