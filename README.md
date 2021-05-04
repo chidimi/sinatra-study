@@ -9,4 +9,4 @@ cssフレームワークにbulmaを使用しています
 - レポジトリをクローン
 - bundle install
 - bundle exec ruby app.rb
-- http://localhost:4567　にアクセス
+- http://localhost:4567
