@@ -35,6 +35,8 @@ end
 get '/memos/:id' do
   memos = memo_accessor.read_memos_json['memos']
   @memo = memos.find { |memo| memo['id'] == params[:id].to_i }
+  raise not_found if @memo.nil?
+
   erb :memodetail
 end
 
@@ -46,6 +48,8 @@ end
 get '/memos/:id/edit' do
   memos = memo_accessor.read_memos_json['memos']
   @memo = memos.find { |memo| memo['id'] == params[:id].to_i }
+  raise not_found if @memo.nil?
+
   erb :editmemo
 end
 
