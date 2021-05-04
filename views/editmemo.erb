@@ -6,11 +6,12 @@
 </head>
 <body>
     <h1>メモアプリ</h1>
-        <form method="post" action="/">
+        <form method="post" action="/memos/<%= h @memo['id'] %>/edit">
+            <input id="hidden" type="hidden" name="_method" value="patch">
             <p>タイトル</p>
-            <input type="text" name="title" value="<%= h @title %>">
+            <input type="text" name="title" value="<%= h @memo['title'] %>">
             <p>内容</p>
-            <textarea name="content"><%= h @content %></textarea>
+            <textarea name="content"><%= h @memo['content'] %></textarea>
             <input type="submit" value="送信">
         </form>
 </body>

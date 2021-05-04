@@ -4,7 +4,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require './models/memo'
 
-memo = Memo.new('./resources/memos.json')
+memo_accessor = MemoAccessor.new('./resources/memos.json')
 
 helpers do
   include Rack::Utils
@@ -12,49 +12,47 @@ helpers do
 end
 
 get '/' do
-  @memos = memo.read_memos_json['memos']
-  p @memos
+  @memos = memo_accessor.read_memos_json['memos']
   erb :top
 end
 
-get '/newmemo' do
+get '/memos/new' do
   erb :newmemo
 end
 
-post '/newmemo' do
-  memos = memo.read_memos_json['memos']
-  memos.each do |memo|
-    memo[]
-  end
-  title = params[:title]
-  content = params[:content]
-end
-
-get '/memodetail/:id' do
-  memos = memo.read_memos_json['memos']
-  @memo = memos.find { |memo| memo['id'] == params[:id] }
-
-  erb :memodetail
-end
-
-delete '/memodetail/:id' do
-  hash = memo.read_memos_json
-  hash['memos'] = hash['memos'].delete_if { |memo| memo['id'] == params[:id] }
-  File.open(MEMO_FILE_PATH, 'w') do |file|
-    JSON.dump(hash, file)
-  end
+post '/memos/new' do
+  memos = memo_accessor.read_memos_json['memos']
+  id = if memos[-1].nil?
+         1
+       else
+         memos[-1]['id'] + 1
+       end
+  new_memo = Memo.new(id, params[:title], params[:content])
+  memo_accessor.add_memo(new_memo)
   redirect to('/')
 end
 
-get '/editmemo/:id' do
-  memos = memo.read_memos_json['memos']
-  @memo = memos.find { |memo| memo['id'] == params[:id] }
+get '/memos/:id' do
+  memos = memo_accessor.read_memos_json['memos']
+  @memo = memos.find { |memo| memo['id'] == params[:id].to_i }
+  erb :memodetail
+end
 
+delete '/memos/:id' do
+  memo_accessor.delete_memo(params[:id].to_i)
+  redirect to('/')
+end
+
+get '/memos/:id/edit' do
+  memos = memo_accessor.read_memos_json['memos']
+  @memo = memos.find { |memo| memo['id'] == params[:id].to_i }
   erb :editmemo
 end
 
-get '/erb_template_page' do
-  erb :erb_template_page
+patch '/memos/:id/edit' do
+  edited_memo = Memo.new(params[:id].to_i, params[:title], params[:content])
+  memo_accessor.edit_memo(edited_memo)
+  redirect to("/memos/#{params[:id]}")
 end
 
 not_found do

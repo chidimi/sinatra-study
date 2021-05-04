@@ -8,9 +8,10 @@
     <h1>メモアプリ</h1>
     <%= h @memo['title'] %>
     <%= h @memo['content'] %>
-    <form method="post" action="/memodetail/<%= h @memo['id'] %>">
+    <form method="post" action="/memos/<%= h @memo['id'] %>">
         <input type="hidden" name="_method" value="DELETE">
     <input type="submit" value="delete!!">
+    <a href="/memos/<%= h @memo['id'] %>/edit">編集</a>
 </form>
 </body>
 </html>
