@@ -6,10 +6,11 @@
 </head>
 <body>
   <h1>メモアプリ</h1>
+  <a href="newmemo">新規追加</a>
   <ul>
-    <% @titles.each do |title| %>
+    <% @memos.each do |memo| %>
     <li>
-        <%= h title %>
+        <a href="memodetail/<%= h memo['id'] %>"><%= h memo['title'] %></a>
     </li>
     <% end %>
   </ul>

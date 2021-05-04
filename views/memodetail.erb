@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <mata charset="utf-8">
+    <title>メモ詳細</title>
+</head>
+<body>
+    <h1>メモアプリ</h1>
+    <%= h @memo['title'] %>
+    <%= h @memo['content'] %>
+    <form method="post" action="/memodetail/<%= h @memo['id'] %>">
+        <input type="hidden" name="_method" value="DELETE">
+    <input type="submit" value="delete!!">
+</form>
+</body>
+</html>
