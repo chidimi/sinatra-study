@@ -12,15 +12,19 @@ helpers do
 end
 
 get '/' do
+  redirect to('/memos')
+end
+
+get '/memos' do
   @memos = memo_accessor.read_memos_json['memos']
-  erb :top
+  erb :memos
 end
 
 get '/memos/new' do
   erb :newmemo
 end
 
-post '/memos/new' do
+post '/memos' do
   memos = memo_accessor.read_memos_json['memos']
   id = if memos[-1].nil?
          1
@@ -53,7 +57,7 @@ get '/memos/:id/edit' do
   erb :editmemo
 end
 
-patch '/memos/:id/edit' do
+patch '/memos/:id' do
   edited_memo = Memo.new(params[:id].to_i, params[:title], params[:content])
   memo_accessor.edit_memo(edited_memo)
   redirect to("/memos/#{params[:id]}")
