@@ -8,9 +8,11 @@ class MemoAccessor
     @filepath = filepath
   end
 
-  def add_memo(memo)
+  def add_memo(title, content)
     hash = read_memos_json
-    new_memo = { 'id' => memo.id, 'title' => memo.title, 'content' => memo.content }
+    id = numbering
+    new_memo = { 'id' => id, 'title' => title, 'content' => content }
+    hash['memos'].sort_by! { |memo| memo['id'] }
     hash['memos'].push(new_memo)
     File.open(@filepath, 'w') do |file|
       JSON.dump(hash, file)
@@ -34,6 +36,15 @@ class MemoAccessor
   def edit_memo(memo)
     delete_memo(memo.id)
     add_memo(memo)
+  end
+
+  def numbering
+    memos = read_memos_json['memos']
+    if memos[-1].nil?
+      1
+    else
+      memos[-1]['id'] + 1
+    end
   end
 end
 

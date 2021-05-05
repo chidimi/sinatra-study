@@ -27,14 +27,7 @@ get '/memos/new' do
 end
 
 post '/memos' do
-  memos = memo_accessor.read_memos_json['memos']
-  id = if memos[-1].nil?
-         1
-       else
-         memos[-1]['id'] + 1
-       end
-  new_memo = Memo.new(id, params[:title], params[:content])
-  memo_accessor.add_memo(new_memo)
+  memo_accessor.add_memo(param[:title], param[:content])
   redirect to('/')
 end
 
@@ -42,7 +35,7 @@ get '/memos/:id' do
   @title = 'メモ詳細'
   memos = memo_accessor.read_memos_json['memos']
   @memo = memos.find { |memo| memo['id'] == params[:id].to_i }
-  raise not_found if @memo.nil?
+  halt 400 if @memo.nil?
 
   erb :memodetail
 end
@@ -56,12 +49,16 @@ get '/memos/:id/edit' do
   @title = 'メモ編集'
   memos = memo_accessor.read_memos_json['memos']
   @memo = memos.find { |memo| memo['id'] == params[:id].to_i }
-  raise not_found if @memo.nil?
+  halt 400 if @memo.nil?
 
   erb :editmemo
 end
 
 patch '/memos/:id' do
+  memos = memo_accessor.read_memos_json['memos']
+  target_memo = memos.find { |memo| memo['id'] == params[:id].to_i }
+  halt 400 if target_memo.nil?
+
   edited_memo = Memo.new(params[:id].to_i, params[:title], params[:content])
   memo_accessor.edit_memo(edited_memo)
   redirect to("/memos/#{params[:id]}")
@@ -69,4 +66,8 @@ end
 
 not_found do
   'ファイルが存在しません'
+end
+
+error 400 do
+  'client error'
 end
