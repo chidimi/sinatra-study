@@ -1,0 +1,12 @@
+<main class="content m-4">
+  <div class="box">
+    <ul>
+      <% @memos.each do |memo| %>
+      <li class="li">
+          <a href="memos/<%= h memo['id'] %>"><%= h memo['title'] %></a>
+      </li>
+      <% end %>
+    </ul>
+  </div>
+  <a href="/memos/new" class="button is-link">新規追加</a>
+</main>
