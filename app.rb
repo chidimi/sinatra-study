@@ -16,11 +16,13 @@ get '/' do
 end
 
 get '/memos' do
+  @title = 'メモ一覧'
   @memos = memo_accessor.read_memos_json['memos']
   erb :memos
 end
 
 get '/memos/new' do
+  @title = 'メモ新規作成'
   erb :newmemo
 end
 
@@ -37,6 +39,7 @@ post '/memos' do
 end
 
 get '/memos/:id' do
+  @title = 'メモ詳細'
   memos = memo_accessor.read_memos_json['memos']
   @memo = memos.find { |memo| memo['id'] == params[:id].to_i }
   raise not_found if @memo.nil?
@@ -50,6 +53,7 @@ delete '/memos/:id' do
 end
 
 get '/memos/:id/edit' do
+  @title = 'メモ編集'
   memos = memo_accessor.read_memos_json['memos']
   @memo = memos.find { |memo| memo['id'] == params[:id].to_i }
   raise not_found if @memo.nil?
