@@ -4,10 +4,10 @@
         <p><%= h @memo['content'] %></p>
     </div>
     <div class="columns">
-        <form method="post" action="/memos/<%= h @memo['id'] %>">
+        <form method="post" action="/memos/<%= @memo['id'] %>">
             <input type="hidden" name="_method" value="DELETE">
             <input type="submit" value="削除" class="button is-danger m-4">
         </form>
-        <a href="/memos/<%= h @memo['id'] %>/edit" class="button is-link m-4">編集</a>
+        <a href="/memos/<%= @memo['id'] %>/edit" class="button is-link m-4">編集</a>
     </div>
 </main>
