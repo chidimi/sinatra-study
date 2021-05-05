@@ -27,7 +27,7 @@ get '/memos/new' do
 end
 
 post '/memos' do
-  memo_accessor.add_memo(param[:title], param[:content])
+  memo_accessor.add_memo(params[:title], params[:content])
   redirect to('/')
 end
 
