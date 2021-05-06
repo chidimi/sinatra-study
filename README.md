@@ -1,8 +1,9 @@
 # sinatraで作成したメモアプリ
 
 sinatraで作成した簡易なメモアプリです  
-メモ内容はresources/memos.jsonに保存されます  
-cssフレームワークにbulmaを使用しています  
+メモ内容はpostgresqlに保存されます。
+使用する場合はdatabase.ymlを変更の上、
+postgresqlの導入と設定をお願いいたします。
 
 # usage
 
