@@ -1,55 +1,36 @@
 # frozen_string_literal: true
 
-require 'json'
+require 'pg'
+require 'yaml'
 
 # memo file accessor
 class MemoAccessor
-  def initialize(filepath)
-    @filepath = filepath
+  def initialize
+    @connect = PG.connect(YAML.load_file('./database.yml')['db'])
+    @connect.exec("CREATE TABLE IF NOT EXISTS memos (
+    id serial primary key,
+    title varchar(30),
+    content varchar(200));")
   end
 
   def add_memo(title, content)
-    hash = read_memos_json
-    id = numbering
-    new_memo = { 'id' => id, 'title' => title, 'content' => content }
-    hash['memos'].push(new_memo)
-    File.open(@filepath, 'w') do |file|
-      JSON.dump(hash, file)
-    end
+    @connect.exec('INSERT INTO memos (title, content) VALUES ($1, $2)', [title, content])
   end
 
-  def read_memos_json
-    file = File.open(@filepath)
-    json = file.read
-    JSON.parse(json)
+  def read_memos
+    @connect.exec('SELECT * FROM memos order by id')
+  end
+
+  def read_memo_by_id(id)
+    @connect.exec('SELECT * FROM memos WHERE id = $1', [id])
   end
 
   def delete_memo(id)
-    hash = read_memos_json
-    hash['memos'] = hash['memos'].delete_if { |memo| memo['id'] == id }
-    File.open(@filepath, 'w') do |file|
-      JSON.dump(hash, file)
-    end
+    @connect.exec('DELETE FROM memos WHERE id = $1', [id])
   end
 
   def edit_memo(memo)
-    delete_memo(memo.id)
-    hash = read_memos_json
-    edited_memo = { 'id' => memo.id, 'title' => memo.title, 'content' => memo.content }
-    hash['memos'].push(edited_memo)
-    hash['memos'].sort_by! { |m| m['id'] }
-    File.open(@filepath, 'w') do |file|
-      JSON.dump(hash, file)
-    end
-  end
-
-  def numbering
-    memos = read_memos_json['memos']
-    if memos[-1].nil?
-      1
-    else
-      memos[-1]['id'] + 1
-    end
+    @connect.exec('UPDATE memos SET title = $1, content = $2 where id = $3', [memo.title, memo.content, memo.id])
   end
 end
 
