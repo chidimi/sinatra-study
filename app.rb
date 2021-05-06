@@ -35,7 +35,7 @@ end
 get '/memos/:id' do
   @title = 'メモ詳細'
   @memo = memo_accessor.read_memo_by_id(params[:id].to_i)
-  halt 400 if @memo.nil?
+  halt 400 if @memo.num_tuples.zero?
 
   erb :memodetail
 end
@@ -48,14 +48,14 @@ end
 get '/memos/:id/edit' do
   @title = 'メモ編集'
   @memo = memo_accessor.read_memo_by_id(params[:id].to_i)
-  halt 400 if @memo.nil?
+  halt 400 if @memo.num_tuples.zero?
 
   erb :editmemo
 end
 
 patch '/memos/:id' do
   memo = memo_accessor.read_memo_by_id(params[:id].to_i)
-  halt 400 if memo.nil?
+  halt 400 if memo.num_tuples.zero?
 
   edited_memo = Memo.new(params[:id].to_i, params[:title], params[:content])
   memo_accessor.edit_memo(edited_memo)
