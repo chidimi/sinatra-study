@@ -11,3 +11,4 @@ end
 
 gem 'sinatra'
 gem 'sinatra-contrib'
+gem 'pg'
