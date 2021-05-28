@@ -6,7 +6,7 @@ require 'yaml'
 # memo file accessor
 class MemoAccessor
   def initialize
-    @connect = PG.connect(YAML.load_file('./database.yml')['db'])
+    @connect = PG.connect(YAML.load_file('./database.yml')['development'])
     @connect.exec("CREATE TABLE IF NOT EXISTS memos (
     id serial primary key,
     title varchar(30),

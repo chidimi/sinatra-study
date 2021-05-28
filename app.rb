@@ -34,9 +34,10 @@ end
 
 get '/memos/:id' do
   @title = 'メモ詳細'
-  @memo = memo_accessor.read_memo_by_id(params[:id].to_i)
-  halt 400 if @memo.num_tuples.zero?
+  memo = memo_accessor.read_memo_by_id(params[:id].to_i)
+  halt 400 if memo.num_tuples.zero?
 
+  @memo = memo[0]
   erb :memodetail
 end
 
@@ -47,9 +48,10 @@ end
 
 get '/memos/:id/edit' do
   @title = 'メモ編集'
-  @memo = memo_accessor.read_memo_by_id(params[:id].to_i)
-  halt 400 if @memo.num_tuples.zero?
+  memo = memo_accessor.read_memo_by_id(params[:id].to_i)
+  halt 400 if memo.num_tuples.zero?
 
+  @memo = memo[0]
   erb :editmemo
 end
 

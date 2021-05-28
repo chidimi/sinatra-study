@@ -1,5 +1,9 @@
-db:
+development:
   host: localhost
   user: daichi
   dbname: sinatra_memo
   port: 5432
+
+production:
+
+test:
