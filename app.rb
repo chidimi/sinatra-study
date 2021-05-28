@@ -4,7 +4,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require './models/memo'
 
-memo_accessor = MemoAccessor.new('./resources/memos.json')
+memo_accessor = MemoAccessor.new
 
 helpers do
   include Rack::Utils
@@ -17,7 +17,8 @@ end
 
 get '/memos' do
   @title = 'メモ一覧'
-  @memos = memo_accessor.read_memos_json['memos']
+  @memos = memo_accessor.read_memos
+
   erb :memos
 end
 
@@ -33,10 +34,10 @@ end
 
 get '/memos/:id' do
   @title = 'メモ詳細'
-  memos = memo_accessor.read_memos_json['memos']
-  @memo = memos.find { |memo| memo['id'] == params[:id].to_i }
-  halt 400 if @memo.nil?
+  memo = memo_accessor.read_memo_by_id(params[:id].to_i)
+  halt 400 if memo.num_tuples.zero?
 
+  @memo = memo[0]
   erb :memodetail
 end
 
@@ -47,17 +48,16 @@ end
 
 get '/memos/:id/edit' do
   @title = 'メモ編集'
-  memos = memo_accessor.read_memos_json['memos']
-  @memo = memos.find { |memo| memo['id'] == params[:id].to_i }
-  halt 400 if @memo.nil?
+  memo = memo_accessor.read_memo_by_id(params[:id].to_i)
+  halt 400 if memo.num_tuples.zero?
 
+  @memo = memo[0]
   erb :editmemo
 end
 
 patch '/memos/:id' do
-  memos = memo_accessor.read_memos_json['memos']
-  target_memo = memos.find { |memo| memo['id'] == params[:id].to_i }
-  halt 400 if target_memo.nil?
+  memo = memo_accessor.read_memo_by_id(params[:id].to_i)
+  halt 400 if memo.num_tuples.zero?
 
   edited_memo = Memo.new(params[:id].to_i, params[:title], params[:content])
   memo_accessor.edit_memo(edited_memo)
